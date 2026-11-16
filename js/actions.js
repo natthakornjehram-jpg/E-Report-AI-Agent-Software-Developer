@@ -6,7 +6,7 @@
 document.addEventListener("contextmenu",function(e){if(e.target&&e.target.tagName==="IMG") e.preventDefault();});
 document.addEventListener("dragstart",function(e){if(e.target&&e.target.tagName==="IMG") e.preventDefault();});
 
-/*  ปุ่มต่าง ๆ ในหน้า  */
+/* ---------- ปุ่มต่าง ๆ ในหน้า ---------- */
 document.addEventListener("click",function(e){
   var b=e.target.closest&&e.target.closest("[data-doc]"); if(!b) return;
   var d=(VS().docs||[])[+b.getAttribute("data-doc")]; if(!d) return;

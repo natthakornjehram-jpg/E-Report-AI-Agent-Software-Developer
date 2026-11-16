@@ -1,4 +1,4 @@
-/* actions.js · สิ่งที่เกิดขึ้นเมื่อกดปุ่ม: เปิดเอกสาร ดูรูป โหมดมืด เปลี่ยนภาษา เมนูมือถือ คลิป เพลง
+/* actions.js  สิ่งที่เกิดขึ้นเมื่อกดปุ่ม -> เปิดเอกสาร ดูรูป โหมดมืด เปลี่ยนภาษา เมนูมือถือ คลิป เพลง
    โหลดตามลำดับใน index.html: state → english → core → render-page → render-team → render-sections → actions → main */
 "use strict";
 
@@ -6,7 +6,7 @@
 document.addEventListener("contextmenu",function(e){if(e.target&&e.target.tagName==="IMG") e.preventDefault();});
 document.addEventListener("dragstart",function(e){if(e.target&&e.target.tagName==="IMG") e.preventDefault();});
 
-/* ---------- ปุ่มต่าง ๆ ในหน้า ---------- */
+/*  ปุ่มต่าง ๆ ในหน้า  */
 document.addEventListener("click",function(e){
   var b=e.target.closest&&e.target.closest("[data-doc]"); if(!b) return;
   var d=(VS().docs||[])[+b.getAttribute("data-doc")]; if(!d) return;

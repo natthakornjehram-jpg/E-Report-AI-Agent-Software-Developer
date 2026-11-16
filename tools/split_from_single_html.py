@@ -1,8 +1,4 @@
-"""แยกเว็บสัมมนาจากไฟล์ HTML ไฟล์เดียว (แบบที่ใช้บน claude.ai) ออกเป็นโฟลเดอร์ที่อ่านง่าย
-
-ใช้เมื่อ: แก้เว็บสัมมนาบน claude.ai หรือได้ไฟล์ ai-agent-seminar-journal.html เวอร์ชันใหม่มา
-แล้วอยากอัปเดตเว็บบน GitHub ให้ตรงกัน
-
+"""
 วิธีรัน (ในโฟลเดอร์ e-report):
     python tools/split_from_single_html.py <ไฟล์.html>
 ตัวอย่าง:
@@ -13,8 +9,8 @@
   2. เก็บเนื้อหาทั้งหมดไว้ที่ data/state.js และคำแปลอังกฤษไว้ที่ data/english.js
   3. แยก CSS ไป css/style.css
   4. แยก JavaScript ตามหน้าที่ไปไว้ใน js/
-  5. ตัดระบบ "แก้ไขหน้าเว็บ" ออก (ใช้ได้เฉพาะบน claude.ai) เว็บบน GitHub เลยเป็นแบบดูอย่างเดียว
-  6. เปลี่ยนลิงก์พอร์ตของมายเป็นลิงก์ GitHub
+  5. ตัดระบบ "แก้ไขหน้าเว็บ" ออก เมื่อขึ้นเว็บบน GitHub เลยสามารถดูได้อย่างเดี่ยวจะไม่สามารถแก้ไขได้
+  6. เปลี่ยนลิงก์พอร์ตเป็นลิงก์ของ GitHub
 """
 import base64, json, os, re, sys
 
@@ -40,7 +36,7 @@ def cut(js, start, end=None):
     return js[a:b].strip("\n")
 
 
-# ---------- อ่านไฟล์ต้นฉบับ ----------
+# อ่านไฟล์ต้น
 if len(sys.argv) < 2:
     sys.exit(__doc__)
 html = open(sys.argv[1], encoding="utf-8").read()
@@ -49,7 +45,7 @@ state = json.loads(re.search(r'<script id="state" type="application/json">(.*?)<
 a = html.index('<script id="app-js">') + len('<script id="app-js">')
 app = html[a:html.rindex("</script>")]
 
-# ---------- 1. รูป คลิป เพลง: ออกมาเป็นไฟล์ ----------
+# 1. รูป คลิป เพลง: ออกมาเป็นไฟล์ 
 media_count = 0
 def save_media(data_uri, name, folder):
     global media_count
@@ -74,7 +70,7 @@ left = [m.group(0)[:40] for m in re.finditer(r'"data:[^"]{0,40}', json.dumps(sta
 if left:
     print("ยังมีไฟล์ฝังอยู่ในเนื้อหา:", left[:5])
 
-# ---------- 2. เนื้อหา + คำแปล ----------
+#  2. เนื้อหา + คำแปล 
 for prof in state.get("profiles", {}).values():
     if "claude.ai/artifact/" in str(prof.get("portfolio", "")) and prof is state["profiles"].get("นางสาวณฐกร เจะรัมย์"):
         prof["portfolio"] = PORTFOLIO_URL
@@ -90,7 +86,7 @@ write("data/english.js",
       "   ถ้าแก้ข้อความไทยใน state.js ต้องแก้ข้อความไทยตรงนี้ให้ตรงกันด้วย ไม่งั้นปุ่ม EN จะแสดงภาษาไทย */\n"
       "SITE_STATE.en = " + json.dumps(english, ensure_ascii=False, indent=1) + ";\n")
 
-# ---------- 3. CSS ----------
+#  3. CSS 
 RESET = ":root{color-scheme:light}\nbody{margin:0;font:14px system-ui,sans-serif}\nimg{max-width:100%}\n[hidden]{display:none!important}\n"
 write("css/style.css",
       "/* ============================================================\n"
@@ -99,7 +95,7 @@ write("css/style.css",
       "   ============================================================ */\n\n"
       "/* ---------- พื้นฐาน ---------- */\n" + RESET + "\n" + css.strip() + "\n")
 
-# ---------- 4. JavaScript แยกตามหน้าที่ ----------
+#  4. JavaScript แยกตามหน้าที่ 
 body = app.strip()
 body = body[body.index('"use strict";') + len('"use strict";'):body.rindex("})();")]
 
@@ -155,7 +151,7 @@ write("js/render-sections.js", HEAD.format(name="render-sections.js", what="ว�
 write("js/actions.js", HEAD.format(name="actions.js", what="สิ่งที่เกิดขึ้นเมื่อกดปุ่ม: เปิดเอกสาร ดูรูป โหมดมืด เปลี่ยนภาษา เมนูมือถือ คลิป เพลง") + deter + "\n\n" + actions + "\n")
 write("js/main.js", HEAD.format(name="main.js", what="จุดเริ่มต้น: วาดหน้าเว็บครั้งแรก") + "render();\n")
 
-# ---------- 5. index.html ----------
+#  5. index.html 
 title = re.search(r"<title>(.*?)</title>", html).group(1)
 fonts = re.search(r'<link rel="stylesheet" href="(https://fonts\.googleapis\.com[^"]+)">', html).group(1).replace("&", "&amp;")
 favicon = state.get("imgs", {}).get("favicon", {}).get("src", "")

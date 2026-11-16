@@ -695,8 +695,8 @@ var SITE_STATE = {
   },
   "deanlisten": {
    "src": "assets/img/deanlisten.jpg",
-   "w": 960,
-   "h": 720
+   "w": 730,
+   "h": 695
   },
   "deskprep": {
    "src": "assets/img/deskprep.jpg",
